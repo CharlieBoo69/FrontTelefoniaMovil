@@ -11,7 +11,7 @@
     // Función para cargar el plan por ID con autenticación
     async function cargarPlan() {
         const authToken = get(token); // Obtiene el token actual
-        const res = await fetch(`http://localhost:5181/api/PlanApi/${id}`, {
+        const res = await fetch(`https://telefoniamovilbackend20241106190423.azurewebsites.net/api/PlanApi/${id}`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`, // Añade el token JWT al encabezado
                 'Content-Type': 'application/json'
