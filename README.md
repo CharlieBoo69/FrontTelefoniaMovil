@@ -1,107 +1,86 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+# README del Frontend
 
----
+## Descripción del Proyecto
+El frontend de este proyecto está desarrollado utilizando **Svelte** para crear una interfaz responsiva y fácil de usar para la gestión de suscripciones de planes de telefonía móvil. Esta interfaz se comunica de manera eficiente con la API backend alojada en Azure, proporcionando funcionalidades completas de CRUD y autenticación de usuarios.
 
-# svelte app
+## Tecnologías Utilizadas
+- **Framework**: Svelte
+- **Enrutamiento**: `svelte-routing`
+- **Gestión de Estado**: Stores de Svelte
+- **IDE**: Visual Studio Code
+- **Alojamiento**: Netlify
+- **Control de Versiones**: Git (GitHub)
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+## Estructura del Proyecto
+El proyecto está organizado de la siguiente manera:
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+- **src/components**: Contiene componentes de UI reutilizables, como `Login.svelte`, `PlanList.svelte` y `CreatePlan.svelte`.
+- **src/pages**: Componentes de las páginas principales como `Index.svelte` (página de inicio de sesión) y `InicioAdmin.svelte` (panel de administración).
+- **src/stores**: Gestión centralizada del estado, incluyendo la autenticación de usuarios y datos de sesión.
+- **public**: Archivos estáticos y recursos.
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
+## Características Principales
+- **Autenticación de Usuarios**: Sistema de inicio de sesión integrado con autenticación JWT del backend.
+- **Gestión de Planes**: Los administradores pueden crear, ver, editar y eliminar planes de telefonía móvil.
+- **Gestión de Suscripciones**: Los usuarios pueden navegar por los planes disponibles y gestionar sus propias suscripciones.
+- **Navegación Basada en Roles**: Garantiza que las funcionalidades específicas para administradores solo sean accesibles para usuarios con los permisos adecuados.
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+## Instalación y Configuración
+Para ejecutar el proyecto localmente, siga estos pasos:
 
+1. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/yourusername/your-repo.git
+   ```
 
-## Get started
+2. **Navegar al directorio del proyecto**:
+   ```bash
+   cd your-repo
+   ```
 
-Install the dependencies...
+3. **Instalar las dependencias**:
+   ```bash
+   npm install
+   ```
 
-```bash
-cd svelte-app
-npm install
-```
+4. **Ejecutar el servidor de desarrollo**:
+   ```bash
+   npm run dev
+   ```
 
-...then start [Rollup](https://rollupjs.org):
+5. **Acceder al frontend** en:
+   ```
+   http://localhost:5173
+   ```
 
-```bash
-npm run dev
-```
+## Despliegue
+El frontend está desplegado en **Netlify**, lo que facilita la integración con GitHub para un despliegue continuo. Cualquier cambio en la rama principal desencadena un despliegue automático. El resultado de la compilación se almacena en el directorio `public`, que es servido por Netlify.
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+### Pasos para el Despliegue:
+1. **Conectar el repositorio a Netlify**.
+2. **Configurar el comando de construcción**:
+   ```bash
+   npm run build
+   ```
+3. **Especificar el directorio de publicación**:
+   ```
+   public
+   ```
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+## Buenas Prácticas Implementadas
+- **Componentes Modulares**: La UI está dividida en componentes pequeños y reutilizables para mejorar la mantenibilidad.
+- **Gestión de Estado**: Uso de stores de Svelte para la gestión de estado global, facilitando el intercambio de datos entre componentes.
+- **Enrutamiento**: Uso de `svelte-routing` para la navegación en el cliente.
+- **Variables de Entorno**: La gestión de datos sensibles, como las claves API, se realiza a través de variables de entorno.
 
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
+## Mejoras Futuras
+- **Mejoras de Diseño Responsivo**: Agregar más estilos para dispositivos móviles y tabletas.
+- **UI/UX Mejorada**: Implementar elementos interactivos y animaciones.
+- **Localización**: Soporte multilingüe para un alcance más amplio de usuarios.
+- **Panel de Análisis**: Un panel para mostrar métricas de usuarios y planes populares.
 
-## Building and running in production mode
+## Contacto y Soporte
+Para cualquier problema o consulta, por favor contacte:
+- **Nombre**: Carlos Esteban Larco
+- **Correo Electrónico**: carlos.larco.escobar@udla.edu.ec
 
-To create an optimised version of the app:
-
-```bash
-npm run build
-```
-
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
-
-
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
-
-```bash
-node scripts/setupTypeScript.js
-```
-
-Or remove the script via:
-
-```bash
-rm scripts/setupTypeScript.js
-```
-
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
-
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
