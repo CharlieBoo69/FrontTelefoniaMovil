@@ -11,6 +11,9 @@
     import EditarSuscripcion from './EditarSuscripcion.svelte';
     import CrearSuscripcion from './CrearSuscripcion.svelte';
     import DetallePlan from './DetallePlan.svelte';
+    import MisSuscripciones from './MisSuscripciones.svelte';
+    import Recomendaciones from './Recomendaciones.svelte';
+
 
     // Redirección en el montaje inicial si no está autenticado
     onMount(() => {
@@ -48,5 +51,7 @@
     {#if $isAuthenticated && $userRole === 'user'}
         <Route path="/" component={Planes} />
         <Route path="/detalle-plan/:id" component={DetallePlan} />
+        <Route path="/mis-suscripciones" component={MisSuscripciones} />
+        <Route path="/recomendaciones" component={Recomendaciones} />
     {/if}
 </Router>

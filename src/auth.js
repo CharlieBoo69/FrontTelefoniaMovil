@@ -17,7 +17,7 @@ export function loginWithToken(authToken, role) {
 }
 
 // Función para cerrar sesión
-export function logout() {
+export async function logout() {
     isAuthenticated.set(false);
     userRole.set(null);
     token.set(null);
@@ -25,6 +25,20 @@ export function logout() {
     // Elimina el token y el rol de localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
+
+    // Llama al endpoint de logout para limpiar las cookies de sesión en el backend
+    try {
+        const response = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Auth/logout', {
+            method: 'POST',
+            credentials: 'include', // Asegura el envío de cookies
+        });
+
+        if (!response.ok) {
+            console.error('Error al cerrar sesión en el backend:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+    }
 }
 
 // Restaura el estado de autenticación al recargar

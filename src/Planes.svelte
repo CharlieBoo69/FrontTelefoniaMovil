@@ -7,30 +7,28 @@
     let planes = [];
     let operadoras = [];
     let operadoraSeleccionada = "Todas las Operadoras";
+    let numeroTelefono = '';
+    let planSeleccionado = null;
+    let errorSuscripcion = '';
 
-    // Redirige automáticamente si el usuario no está autenticado
     onMount(() => {
         if (!get(isAuthenticated)) {
             navigate('/login');
         } else {
-            cargarOperadorasYPlanes(); // Carga los planes y operadoras si está autenticado
+            cargarOperadorasYPlanes();
         }
     });
 
-    // Cargar las operadoras únicas y los planes desde el backend
     async function cargarOperadorasYPlanes() {
         try {
-            const authToken = get(token);
-            const res = await fetch('https://telefoniamovilbackend20241106190423.azurewebsites.net/api/PlanApi', {
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                    'Content-Type': 'application/json'
-                }
+            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi', {
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
             });
             if (res.ok) {
                 planes = await res.json();
                 obtenerOperadorasUnicas();
-                filtrarPlanes(); // Mostrar todos los planes al cargar
+                filtrarPlanes();
             } else {
                 console.error('Error al cargar los planes:', res.status, res.statusText);
             }
@@ -39,32 +37,25 @@
         }
     }
 
-    // Obtener operadoras únicas de los planes
     function obtenerOperadorasUnicas() {
         const operadorasSet = new Set(planes.map(plan => plan.operadora));
         operadoras = ["Todas las Operadoras", ...operadorasSet];
-        console.log('Operadoras únicas:', operadoras);
     }
 
-    // Filtrar los planes por operadora desde el backend
     async function filtrarPlanes() {
         try {
-            const authToken = get(token);
-            let url = 'https://telefoniamovilbackend20241106190423.azurewebsites.net/api/PlanApi';
+            let url = 'https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi';
             if (operadoraSeleccionada !== "Todas las Operadoras") {
                 url += `/ByOperadora/${encodeURIComponent(operadoraSeleccionada)}`;
             }
 
             const res = await fetch(url, {
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                    'Content-Type': 'application/json'
-                }
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
             });
 
             if (res.ok) {
                 planes = await res.json();
-                console.log('Planes filtrados cargados:', planes);
             } else {
                 console.error('Error al cargar los planes filtrados:', res.status, res.statusText);
             }
@@ -73,37 +64,63 @@
         }
     }
 
-    // Redirigir a la página de edición
-    function editarPlan(id) {
-        navigate(`/editar/${id}`);
+
+    async function crearSuscripcion(planId) {
+    errorSuscripcion = ''; // Limpiar errores previos
+
+    if (!numeroTelefono.trim()) {
+        errorSuscripcion = 'Por favor, ingresa un número de teléfono.';
+        return;
     }
 
-    // Redirigir a la página de creación
-    function crearNuevoPlan() {
-        navigate('/crear');
-    }
+    const confirmacion = confirm('¿Estás seguro de que deseas suscribirte a este plan?');
+    if (!confirmacion) return;
 
-    // Redirigir a la página de detalles
-    function verDetallePlan(id) {
-        navigate(`/detalle-plan/${id}`);
-    }
+    // Verifica los datos que estás enviando
+    console.log('Datos enviados:', { planId, numeroTelefono });
 
-    // Eliminar un plan con confirmación y autenticación
+    try {
+        const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ planId, numeroTelefono }),
+        });
+
+        if (res.ok) {
+            const mensajeExito = await res.text();
+            console.log(mensajeExito);
+            alert(mensajeExito);
+            errorSuscripcion = '';
+            numeroTelefono = '';
+            planSeleccionado = null;
+        } else {
+            const mensajeError = await res.text();
+            console.error('Error del servidor:', mensajeError);
+            errorSuscripcion = mensajeError || 'Ocurrió un error al intentar suscribirse.';
+        }
+    } catch (error) {
+        console.error('Error en la solicitud de suscripción:', error);
+        errorSuscripcion = 'No se pudo conectar con el servidor.';
+    }
+}
+
+
     async function eliminarPlan(id) {
         const confirmacion = confirm('¿Estás seguro de que deseas eliminar este plan?');
         if (confirmacion) {
             try {
                 const authToken = get(token);
-                const res = await fetch(`https://telefoniamovilbackend20241106190423.azurewebsites.net/api/PlanApi/${id}`, {
+                const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${authToken}`,
-                        'Content-Type': 'application/json'
-                    }
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
                 });
                 if (res.ok) {
                     planes = planes.filter(plan => plan.id !== id);
-                    console.log('Plan eliminado con éxito');
                 } else {
                     console.error('Error al eliminar el plan:', res.status, res.statusText);
                 }
@@ -113,38 +130,196 @@
         }
     }
 
-    // Función para cerrar sesión y redirigir al login
+    function irARecomendaciones() {
+    navigate('/recomendaciones');
+}
+
     function handleLogout() {
         logout();
         navigate('/login');
     }
+
+    function editarPlan(id) {
+        navigate(`/editar/${id}`);
+    }
+
+    function crearNuevoPlan() {
+        navigate('/crear');
+    }
+
+    function verDetallePlan(id) {
+        navigate(`/detalle-plan/${id}`);
+    }
 </script>
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        text-align: center;
+        color: white;
+        background-color: #1f4e78; /* Azul oscuro */
+        padding: 20px;
+        margin: 0;
+        border-radius: 0 0 10px 10px;
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 14px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    button.green {
+        background-color: #388e3c; /* Verde */
+    }
+
+    button.green:hover {
+        background-color: #2e7d32;
+    }
+
+    button.blue {
+        background-color: #1f4e78; /* Azul oscuro */
+    }
+
+    button.blue:hover {
+        background-color: #143d5b;
+    }
+
+    button.red {
+        background-color: #d32f2f; /* Rojo */
+    }
+
+    button.red:hover {
+        background-color: #b71c1c;
+    }
+
+    .operadora-filter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+        gap: 10px;
+    }
+
+    select {
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0 auto;
+        padding: 0;
+        max-width: 900px;
+    }
+
+    li {
+        background: white;
+        margin: 15px 0;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    li p {
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+
+    .plan-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .error {
+        color: #d32f2f;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    input[type="text"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: calc(100% - 20px);
+    }
+
+    input[type="text"]:focus {
+        border-color: #1f4e78;
+        outline: none;
+    }
+</style>
 
 <h1>Planes de Telefonía</h1>
 
-<button on:click={handleLogout}>Cerrar Sesión</button>
+<div class="buttons">
+    <button class="blue" on:click={handleLogout}>Cerrar Sesión</button>
+    {#if $userRole === 'admin'}
+        <button class="green" on:click={crearNuevoPlan}>Crear Nuevo Plan</button>
+        <button class="blue" on:click={() => navigate('/suscripciones')}>Gestionar Suscripciones</button>
+    {/if}
+    {#if $userRole === 'user'}
+        <button class="blue" on:click={() => navigate('/mis-suscripciones')}>Ver Mis Suscripciones</button>
+        <button class="green" on:click={irARecomendaciones}>Ir a Recomendaciones</button>
+        {/if}
+</div>
 
-{#if $userRole === 'admin'}
-    <button on:click={crearNuevoPlan}>Crear Nuevo Plan</button>
-    <button on:click={() => navigate('/suscripciones')}>Gestionar Suscripciones</button>
-{/if}
-
-<!-- Filtro de operadora -->
-<select bind:value={operadoraSeleccionada} on:change={filtrarPlanes}>
-    {#each operadoras as operadora}
-        <option>{operadora}</option>
-    {/each}
-</select>
+<div class="operadora-filter">
+    <select bind:value={operadoraSeleccionada} on:change={filtrarPlanes}>
+        {#each operadoras as operadora}
+            <option>{operadora}</option>
+        {/each}
+    </select>
+</div>
 
 <ul>
     {#each planes as plan (plan.id)}
         <li>
-            {plan.nombre} - {plan.costo} USD - {plan.operadora}
-            <button on:click={() => verDetallePlan(plan.id)}>Ver Detalles</button>
-            {#if $userRole === 'admin'}
-                <button on:click={() => editarPlan(plan.id)}>Editar</button>
-                <button on:click={() => eliminarPlan(plan.id)}>Eliminar</button>
-            {/if}
+            <p><strong>{plan.nombre}</strong> - {plan.costo} USD - {plan.operadora}</p>
+            <div class="plan-actions">
+                <button class="blue" on:click={() => verDetallePlan(plan.id)}>Ver Detalles</button>
+                {#if $userRole === 'admin'}
+                    <button class="green" on:click={() => editarPlan(plan.id)}>Editar</button>
+                    <button class="red" on:click={() => eliminarPlan(plan.id)}>Eliminar</button>
+                {/if}
+                {#if $userRole === 'user'}
+                    {#if planSeleccionado === plan.id}
+                        <input type="text" placeholder="Número de teléfono" bind:value={numeroTelefono} />
+                        <button class="green" on:click={() => crearSuscripcion(plan.id)}>Confirmar</button>
+                        <button class="red" on:click={() => planSeleccionado = null}>Cancelar</button>
+                    {:else}
+                        <button class="blue" on:click={() => planSeleccionado = plan.id}>Suscribirse</button>
+                    {/if}
+                {/if}
+            </div>
         </li>
     {/each}
 </ul>
+
+{#if errorSuscripcion}
+    <p class="error">{errorSuscripcion}</p>
+{/if}

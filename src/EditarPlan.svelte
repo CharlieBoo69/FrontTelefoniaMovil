@@ -4,82 +4,189 @@
     import { token, isAuthenticated } from './auth.js';
     import { get } from 'svelte/store';
 
-    export let id; // Recibe el id del plan como parámetro de la URL
+    export let id;
 
     let planEdicion = null;
 
-    // Función para cargar el plan por ID con autenticación
     async function cargarPlan() {
-        const authToken = get(token); // Obtiene el token actual
-        const res = await fetch(`https://telefoniamovilbackend20241106190423.azurewebsites.net/api/PlanApi/${id}`, {
-            headers: {
-                'Authorization': `Bearer ${authToken}`, // Añade el token JWT al encabezado
-                'Content-Type': 'application/json'
+        try {
+            const authToken = get(token);
+            const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            if (res.ok) {
+                planEdicion = await res.json();
+            } else {
+                console.error('Error al cargar el plan:', await res.text());
             }
-        });
-        if (res.ok) {
-            planEdicion = await res.json();
-        } else {
-            console.error('Error al cargar el plan');
+        } catch (error) {
+            console.error('Error al cargar el plan:', error);
         }
     }
 
-    // Función para guardar los cambios del plan editado con autenticación
     async function guardarCambios() {
-        const authToken = get(token);
-        const res = await fetch(`https://telefoniamovilbackend20241106190423.azurewebsites.net/api/PlanApi/${planEdicion.id}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${authToken}`, // Añade el token JWT al encabezado
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(planEdicion),
-        });
+        try {
+            const authToken = get(token);
+            const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi/${planEdicion.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(planEdicion),
+            });
 
-        if (res.ok) {
-            console.log('Plan actualizado con éxito');
-            navigate('/'); // Redirige a la página principal después de guardar los cambios
-        } else {
-            console.error('Error al actualizar el plan');
+            if (res.ok) {
+                console.log('Plan actualizado con éxito');
+                navigate('/');
+            } else {
+                console.error('Error al actualizar el plan:', await res.text());
+            }
+        } catch (error) {
+            console.error('Error al actualizar el plan:', error);
         }
     }
 
-    // Función para cancelar la edición y regresar a la página principal
     function cancelarEdicion() {
-        navigate('/'); // Redirige a la página principal
+        navigate('/');
     }
 
-    // Redirige automáticamente si el usuario no está autenticado
     onMount(() => {
         if (!get(isAuthenticated)) {
-            navigate('/login'); // Redirige a la página de inicio de sesión si no está autenticado
+            navigate('/login');
         } else {
-            cargarPlan(); // Carga el plan si está autenticado
+            cargarPlan();
         }
     });
 </script>
 
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 0;
+    }
+
+    h2 {
+        text-align: center;
+        background-color: #1f4e78; /* Azul oscuro */
+        color: white;
+        padding: 15px;
+        margin: 0;
+        border-radius: 0 0 10px 10px;
+        font-size: 24px;
+    }
+
+    .editar-container {
+        max-width: 600px;
+        margin: 30px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .editar-container label {
+        display: block;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .editar-container input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .editar-container input:focus {
+        border-color: #1f4e78; /* Azul oscuro */
+        outline: none;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-group button {
+        flex: 1;
+        padding: 12px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .save {
+        background-color: #1f4e78; /* Azul oscuro */
+        color: white;
+    }
+
+    .save:hover {
+        background-color: #143d5b; /* Azul más oscuro */
+    }
+
+    .cancel {
+        background-color: #d32f2f; /* Rojo */
+        color: white;
+    }
+
+    .cancel:hover {
+        background-color: #b71c1c; /* Rojo oscuro */
+    }
+
+    .loading {
+        text-align: center;
+        color: #777;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+</style>
+
 <h2>Editar Plan</h2>
 
 {#if planEdicion}
-    <div>
-        <label>Nombre del plan:</label>
-        <input bind:value={planEdicion.nombre} />
-        <label>Costo (USD):</label>
-        <input type="number" bind:value={planEdicion.costo} />
-        <label>Datos (GB):</label>
-        <input type="number" bind:value={planEdicion.datos} />
-        <label>Minutos:</label>
-        <input type="number" bind:value={planEdicion.minutos} />
-        <label>SMS:</label>
-        <input type="number" bind:value={planEdicion.sms} />
-        <label>Operadora:</label>
-        <input bind:value={planEdicion.operadora} />
-        <label>Beneficios Adicionales:</label>
-        <input bind:value={planEdicion.beneficiosAdicionales} />
-        <button on:click={guardarCambios}>Guardar cambios</button>
-        <button on:click={cancelarEdicion}>Cancelar</button>
+    <div class="editar-container">
+        <label for="nombre">Nombre del plan:</label>
+        <input id="nombre" bind:value={planEdicion.nombre} placeholder="Ingrese el nombre del plan" />
+
+        <label for="costo">Costo (USD):</label>
+        <input id="costo" type="number" bind:value={planEdicion.costo} placeholder="Ingrese el costo en USD" />
+
+        <label for="datos">Datos (GB):</label>
+        <input id="datos" type="number" bind:value={planEdicion.datos} placeholder="Ingrese los datos en GB" />
+
+        <label for="minutos">Minutos:</label>
+        <input id="minutos" type="number" bind:value={planEdicion.minutos} placeholder="Ingrese los minutos" />
+
+        <label for="sms">SMS:</label>
+        <input id="sms" type="number" bind:value={planEdicion.sms} placeholder="Ingrese los SMS" />
+
+        <label for="operadora">Operadora:</label>
+        <input id="operadora" bind:value={planEdicion.operadora} placeholder="Ingrese la operadora" />
+
+        <label for="beneficios">Beneficios Adicionales:</label>
+        <input id="beneficios" bind:value={planEdicion.beneficiosAdicionales} placeholder="Ingrese los beneficios adicionales" />
+
+        <div class="button-group">
+            <button class="save" on:click={guardarCambios}>Guardar Cambios</button>
+            <button class="cancel" on:click={cancelarEdicion}>Cancelar</button>
+        </div>
     </div>
 {:else}
-    <p>Cargando plan...</p>
+    <p class="loading">Cargando plan...</p>
 {/if}
