@@ -91,3 +91,13 @@ npm run dev
 ```
 http://localhost:8080
 ```
+## ✨ Autor
+
+Proyecto desarrollado por Carlos Esteban Larco Escobar como parte del sistema de gestión de telefonía móvil.
+
+Para más información, puedes contactarme a través de:
+- 📧 Email: carlos.larco.escobar@udla.edu.ec
+- 💼 Telefono: 0969424932
+  
+
+¡Gracias por usar este proyecto! 😊
