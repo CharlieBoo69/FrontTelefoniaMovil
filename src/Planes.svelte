@@ -21,7 +21,7 @@
 
     async function cargarOperadorasYPlanes() {
         try {
-            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi', {
+            const res = await fetch('http://localhost:5181/api/PlanApi', {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
             });
@@ -44,7 +44,7 @@
 
     async function filtrarPlanes() {
         try {
-            let url = 'https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi';
+            let url = 'http://localhost:5181/api/PlanApi';
             if (operadoraSeleccionada !== "Todas las Operadoras") {
                 url += `/ByOperadora/${encodeURIComponent(operadoraSeleccionada)}`;
             }
@@ -80,7 +80,7 @@
     console.log('Datos enviados:', { planId, numeroTelefono });
 
     try {
-        const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/subscribe', {
+        const res = await fetch('http://localhost:5181/api/Suscripcion/subscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -111,7 +111,7 @@
         if (confirmacion) {
             try {
                 const authToken = get(token);
-                const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi/${id}`, {
+                const res = await fetch(`http://localhost:5181/api/PlanApi/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${authToken}`,
@@ -281,6 +281,9 @@
     {#if $userRole === 'admin'}
         <button class="green" on:click={crearNuevoPlan}>Crear Nuevo Plan</button>
         <button class="blue" on:click={() => navigate('/suscripciones')}>Gestionar Suscripciones</button>
+        <button class="blue" on:click={() => navigate('/reporte-usuarios')}>Reporte de Usuarios</button>
+        <button class="blue" on:click={() => navigate('/crear-usuario')}>Crear Usuario</button>
+
     {/if}
     {#if $userRole === 'user'}
         <button class="blue" on:click={() => navigate('/mis-suscripciones')}>Ver Mis Suscripciones</button>
@@ -305,6 +308,8 @@
                 {#if $userRole === 'admin'}
                     <button class="green" on:click={() => editarPlan(plan.id)}>Editar</button>
                     <button class="red" on:click={() => eliminarPlan(plan.id)}>Eliminar</button>
+                    
+
                 {/if}
                 {#if $userRole === 'user'}
                     {#if planSeleccionado === plan.id}

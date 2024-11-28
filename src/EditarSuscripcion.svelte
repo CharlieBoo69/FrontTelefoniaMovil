@@ -21,7 +21,7 @@
     async function cargarSuscripcion() {
         try {
             const authToken = get(token);
-            const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/${id}`, {
+            const res = await fetch(`http://localhost:5181/api/Suscripcion/${id}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
@@ -44,7 +44,7 @@
     async function guardarCambios() {
         try {
             const authToken = get(token);
-            const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/${id}`, {
+            const res = await fetch(`http://localhost:5181/api/Suscripcion/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${authToken}`,

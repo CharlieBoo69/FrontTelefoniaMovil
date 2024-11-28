@@ -25,7 +25,7 @@
     async function cargarSuscripcionesPopulares() {
         try {
             const authToken = get(token);
-            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/TopPlanes', {
+            const res = await fetch('http://localhost:5181/api/Suscripcion/TopPlanes', {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
@@ -83,7 +83,7 @@
     async function cargarTodasLasSuscripciones() {
         try {
             const authToken = get(token);
-            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion', {
+            const res = await fetch('http://localhost:5181/api/Suscripcion', {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
@@ -107,7 +107,7 @@
         if (confirmacion) {
             try {
                 const authToken = get(token);
-                const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/${id}`, {
+                const res = await fetch(`http://localhost:5181/api/Suscripcion/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${authToken}`,

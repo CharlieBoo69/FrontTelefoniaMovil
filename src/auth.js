@@ -28,7 +28,7 @@ export async function logout() {
 
     // Llama al endpoint de logout para limpiar las cookies de sesión en el backend
     try {
-        const response = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Auth/logout', {
+        const response = await fetch('http://localhost:5181/api/Auth/logout', {
             method: 'POST',
             credentials: 'include', // Asegura el envío de cookies
         });

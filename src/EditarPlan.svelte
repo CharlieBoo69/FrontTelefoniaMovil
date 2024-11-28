@@ -11,7 +11,7 @@
     async function cargarPlan() {
         try {
             const authToken = get(token);
-            const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi/${id}`, {
+            const res = await fetch(`http://localhost:5181/api/PlanApi/${id}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
@@ -33,7 +33,7 @@
     async function guardarCambios() {
         try {
             const authToken = get(token);
-            const res = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi/${planEdicion.id}`, {
+            const res = await fetch(`http://localhost:5181/api/PlanApi/${planEdicion.id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${authToken}`,

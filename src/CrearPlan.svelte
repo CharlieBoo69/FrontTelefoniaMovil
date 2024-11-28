@@ -17,7 +17,7 @@
         try {
             const authToken = get(token);
 
-            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi', {
+            const res = await fetch('http://localhost:5181/api/PlanApi', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${authToken}`,

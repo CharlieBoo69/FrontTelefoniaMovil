@@ -13,6 +13,8 @@
     import DetallePlan from './DetallePlan.svelte';
     import MisSuscripciones from './MisSuscripciones.svelte';
     import Recomendaciones from './Recomendaciones.svelte';
+    import ReporteUsuarios from './ReporteUsuarios.svelte';
+    import CrearUsuario from './CrearUsuario.svelte';
 
 
     // Redirección en el montaje inicial si no está autenticado
@@ -41,6 +43,9 @@
         <Route path="/editar-suscripcion/:id" component={EditarSuscripcion} />
         <Route path="/crear-suscripcion" component={CrearSuscripcion} /> 
         <Route path="/detalle-plan/:id" component={DetallePlan} />
+        <Route path="/reporte-usuarios" component={ReporteUsuarios} />
+        <Route path="/crear-usuario" component={CrearUsuario} />
+
 
 
 

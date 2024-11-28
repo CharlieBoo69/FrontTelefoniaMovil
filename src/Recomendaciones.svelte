@@ -33,7 +33,7 @@
 
     async function cargarPlanesYOperadoras() {
         try {
-            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi', {
+            const res = await fetch('http://localhost:5181/api/PlanApi', {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
             });
@@ -55,7 +55,7 @@
         planSeleccionado = null; // Limpiar selección previa
         numeroTelefono = ''; // Limpiar campo de teléfono
         try {
-            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/PlanApi/GetRecommendedPlans', {
+            const res = await fetch('http://localhost:5181/api/PlanApi/GetRecommendedPlans', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,7 +83,7 @@
         }
 
         try {
-            const res = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/subscribe', {
+            const res = await fetch('http://localhost:5181/api/Suscripcion/subscribe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

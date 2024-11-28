@@ -21,7 +21,7 @@
     async function cargarSuscripciones() {
         try {
             const authToken = get(token);
-            const response = await fetch('https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/User', {
+            const response = await fetch('http://localhost:5181/api/Suscripcion/User', {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
@@ -52,7 +52,7 @@
     async function desuscribirse(id) {
         try {
             const authToken = get(token);
-            const response = await fetch(`https://telefoniamovilbackendfinal.azurewebsites.net/api/Suscripcion/${id}`, {
+            const response = await fetch(`http://localhost:5181/api/Suscripcion/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
